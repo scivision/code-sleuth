@@ -11,6 +11,8 @@ def detect_lang(path: Path) -> T.List[str]:
         listing-the-packages-that-a-repository-depends-on#supported-package-ecosystems
     """
 
+    path = Path(path).expanduser().resolve()
+
     cmfn = path / "codemeta.json"
     if cmfn.is_file():
         try:
@@ -23,6 +25,8 @@ def detect_lang(path: Path) -> T.List[str]:
     # fallback to heuristic
     if (path / "pyproject.toml").is_file() or (path / "pipfile.lock").is_file():
         return ["python"]
+    if (path / "Cargo.toml").is_file():
+        return ["rust"]
     if (path / "package-lock.json").is_file() or (path / "yarn.lock").is_file():
         return ["javascript"]
     if (path / "composer.lock").is_file():
